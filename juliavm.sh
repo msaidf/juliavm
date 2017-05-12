@@ -55,7 +55,7 @@ juliavm_osx_install(){
   if ! [ -d $dists_dir ]; then
     mkdir -p "$dists_dir"
     cd "$dists_dir"
-    wget "$url"
+    command curl -O "$url"
     hdiutil attach $file
     cp -r "/Volumes/Julia-$1/Julia-$major.app/Contents/Resources/julia/"* .
     hdiutil detach "/Volumes/Julia-$1"
