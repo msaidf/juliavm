@@ -20,7 +20,7 @@ juliavm_echo() {
 
 juliavm_ls_remote() {
   juliavm_echo "Versions available for julia language:"
-  command git ls-remote -t $JULIAVM_JULIA_REPO | cut -d '/' -f 3 | cut -c 1 --complement |cut -d '^' -f 1
+  command git ls-remote -t $JULIAVM_JULIA_REPO | awk '/refs\/tags\/v([0-9]|[a-z]|.)*[^}]$/{print$2}'
 }
 
 juliavm_unix_install(){
