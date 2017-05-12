@@ -62,7 +62,6 @@ juliavm_osx_install(){
     rm $file
     echo "Julia $1 installed!"
   fi
-  # ln -sf "$JULIAVM_WORK_DIR/dists/$1/bin/julia" "/usr/local/bin/julia"
 }
 
 juliavm_use(){
