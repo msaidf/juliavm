@@ -14,7 +14,7 @@
     }
   }
 
-  juliavm_install(){
+  juliavm_unix_install(){
     juliavm_echo "Creating directories structure ..."
     juliavm_create_directories
     juliavm_echo "Moving files ..."
@@ -58,5 +58,5 @@
     juliavm_echo $JULIAVM_PLATFORM
   }
 
-  juliavm_install
+  juliavm_unix_install
 }
