@@ -14,7 +14,7 @@
     }
   }
 
-  juliavm_install(){
+  juliavm_unix_install(){
     juliavm_echo "Creating directories structure ..."
     juliavm_create_directories
     juliavm_echo "Moving files ..."
@@ -33,5 +33,5 @@
     eval 'cp -r $CURRENT_DIR/.git $INSTALL_DIR'
   }
 
-  juliavm_install
+  juliavm_unix_install
 }

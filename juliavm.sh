@@ -23,7 +23,7 @@ juliavm_ls_remote() {
   command git ls-remote -t $JULIAVM_JULIA_REPO | cut -d '/' -f 3 | cut -c 1 --complement |cut -d '^' -f 1
 }
 
-juliavm_install(){
+juliavm_unix_install(){
   file=$(juliavm_get_file_name "$1" "$2")
   url=$(juliavm_get_download_url "$1" "$2")
 
@@ -43,8 +43,26 @@ juliavm_install(){
     juliavm_echo 'Cleaning ...'
     command rm "$dists_dir"/"$file".tar.gz
   fi
-  juliavm_echo "Julia "$1" installed!"
+  juliavm_echo "Julia $1 installed!"
   juliavm_use $1
+}
+
+juliavm_osx_install(){
+  major=${1:0:3}
+  file="julia-$1-osx10.7+.dmg"
+  url="https://s3.amazonaws.com/julialang/bin/osx/x64/$major/$file"
+  dists_dir="$JULIAVM_WORK_DIR/dists/$1"
+  if ! [ -d $dists_dir ]; then
+    mkdir -p "$dists_dir"
+    cd "$dists_dir"
+    wget "$url"
+    hdiutil attach $file
+    cp -r "/Volumes/Julia-$1/Julia-$major.app/Contents/Resources/julia/"* .
+    hdiutil detach "/Volumes/Julia-$1"
+    rm $file
+    echo "Julia $1 installed!"
+  fi
+  ln -sf "$JULIAVM_WORK_DIR/dists/$1/bin/julia" "/usr/local/bin/julia"
 }
 
 juliavm_use(){
@@ -161,6 +179,7 @@ juliavm_help() {
   juliavm_echo " "
   juliavm_echo " ARCHITECTURE options (if you don't pass unix 64 bits will be used):"
   juliavm_echo "  -x64    unix 64 bits"
+  juliavm_echo "  -osx    mac osx bits"
   juliavm_echo "  -x86    unix 32 bits"
 }
 
@@ -190,8 +209,12 @@ juliavm_uninstall_packages(){
 if [[ "$1" == 'ls-remote' ]]; then
   juliavm_ls_remote
 elif [[ "$1" == 'install' ]]; then
-  if  juliavm_version_is_available_remote "$2" "$3"; then
-    juliavm_install "$2" "$3"
+  if [[ "$3" == '-osx' ]]; then
+    juliavm_osx_install "$2" "$3"
+  else
+    if  juliavm_version_is_available_remote "$2" "$3"; then
+      juliavm_unix_install "$2" "$3"
+    fi
   fi
 elif [[ "$1" == 'ls' ]]; then
   juliavm_ls "$2"
