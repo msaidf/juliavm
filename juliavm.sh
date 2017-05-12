@@ -179,18 +179,18 @@ juliavm_update(){
 
 
 juliavm_help() {
-  juliavm_echo "  install x.y.z     install x.y.x version [ARCHITECTURE]"
-  juliavm_echo "  use x.y.z         use x.y.x version [ARCHITECTURE]"
+  juliavm_echo "  install x.y.z     install x.y.x version [PLATFORM]"
+  juliavm_echo "  use x.y.z         use x.y.x version [PLATFORM]"
   juliavm_echo "  ls-remote         list all remote versions"
   juliavm_echo "  ls                list all locale versions"
   juliavm_echo "  update            update juliavm with latest resources"
   juliavm_echo "  uninstall         uninstall juliavm and all julia versions downloaded inside juliavm"
-  juliavm_echo "      --hard        uninstall all Julia packages, if isn't passed with uninstall command. soft uninstall will be used"
+  juliavm_echo "      --hard        uninstall all Julia packages, if isn't passed with uninstall command soft uninstall will be used"
   juliavm_echo " "
   juliavm_echo "  help              list all commands"
   juliavm_echo " "
-  juliavm_echo " ARCHITECTURE options (if you don't pass unix 64 bits will be used):"
-  juliavm_echo "  -osx    mac osx bits"
+  juliavm_echo " PLATFORM options (if you don't pass unix 64 bits will be used):"
+  juliavm_echo "  -osx    osx 64 bits"
   juliavm_echo "  -x64    unix 64 bits"
   juliavm_echo "  -x86    unix 32 bits"
 }
