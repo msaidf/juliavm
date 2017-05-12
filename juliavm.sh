@@ -4,8 +4,9 @@
 
 # Setup mirror location if not already set
 export JULIAVM_JULIA_REPO="https://github.com/JuliaLang/julia"
-export JULIAVM_JULIA_AWS="https://julialang.s3.amazonaws.com/bin/linux/"
-export JULIAVM_WORK_DIR
+export JULIAVM_JULIA_AWS_LINUX="https://julialang.s3.amazonaws.com/bin/linux/"
+export JULIAVM_JULIA_AWS_OSX="https://s3.amazonaws.com/julialang/bin/osx/"
+export JULIAVM_WORK_DIR=
 JULIAVM_WORK_DIR=$( cd "$( dirname "$0" )" && pwd )
 
 juliavm_echo() {
@@ -49,9 +50,8 @@ juliavm_unix_install(){
 }
 
 juliavm_osx_install(){
-  major=${1:0:3}
-  file="julia-$1-osx10.7+.dmg"
-  url="https://s3.amazonaws.com/julialang/bin/osx/x64/$major/$file"
+  file=$(juliavm_get_file_name "$1" "$2")
+  url=$(juliavm_get_download_url "$1" "$2")
   dists_dir="$JULIAVM_WORK_DIR/dists/$1"
   command mkdir -p "$dists_dir"
   command cd "$dists_dir"
@@ -67,6 +67,8 @@ juliavm_use(){
   if [[ "$2" == '-x86' ]]; then
     EXEC_PATH="$JULIAVM_WORK_DIR/dists/$1$2/bin/julia"
   elif [[ "$2" == '-64' ]]; then
+    EXEC_PATH="$JULIAVM_WORK_DIR/dists/$1/bin/julia"
+  elif [[ "$2" == '-osx' ]]; then
     EXEC_PATH="$JULIAVM_WORK_DIR/dists/$1/bin/julia"
   else
     EXEC_PATH="$JULIAVM_WORK_DIR/dists/$1/bin/julia"
@@ -85,6 +87,8 @@ juliavm_version_is_available_locale(){
   if [[ "$2" == '-x86' ]]; then
     VERSION_DIR="$JULIAVM_WORK_DIR/dists/$1$2"
   elif [[ "$2" == '-x64' ]]; then
+    VERSION_DIR="$JULIAVM_WORK_DIR/dists/$1"
+  elif [[ "$2" == '-osx' ]]; then
     VERSION_DIR="$JULIAVM_WORK_DIR/dists/$1"
   else
     VERSION_DIR="$JULIAVM_WORK_DIR/dists/$1"
@@ -119,6 +123,9 @@ juliavm_get_file_name(){
   elif [[ "$2" == '-x64' ]]; then
     file='julia-'$1'-linux-x86_64'
     juliavm_echo $file
+  elif [[ "$2" == '-osx' ]]; then
+    file="julia-$1-osx10.7+.dmg"
+    juliavm_echo $file
   else
     file='julia-'$1'-linux-x86_64'
     juliavm_echo $file
@@ -131,15 +138,19 @@ juliavm_get_download_url(){
 
   if [[ "$2" == '-x86' ]]; then
     arch='x86/'
-    url=$JULIAVM_JULIA_AWS$arch$major$file'.tar.gz'
+    url=$JULIAVM_JULIA_AWS_LINUX$arch$major$file'.tar.gz'
     juliavm_echo $url
   elif [[ "$2" == '-x64' ]]; then
     arch='x64/'
-    url=$JULIAVM_JULIA_AWS$arch$major$file'.tar.gz'
+    url=$JULIAVM_JULIA_AWS_LINUX$arch$major$file'.tar.gz'
+    juliavm_echo $url
+  elif [[ "$2" == '-osx' ]]; then
+    arch='x64/'
+    url=$JULIAVM_JULIA_AWS_OSX$arch$major$file
     juliavm_echo $url
   else
     arch='x64/'
-    url=$JULIAVM_JULIA_AWS$arch$major$file'.tar.gz'
+    url=$JULIAVM_JULIA_AWS_LINUX$arch$major$file'.tar.gz'
     juliavm_echo $url
   fi
 }
@@ -149,6 +160,9 @@ juliavm_get_dist_dir(){
     dist_dir=$JULIAVM_WORK_DIR'/dists/'$1$2
     juliavm_echo $dist_dir
   elif [[ "$2" == '-x64' ]]; then
+    dist_dir=$JULIAVM_WORK_DIR'/dists/'$1
+    juliavm_echo $dist_dir
+  elif [[ "$2" == '-osx' ]]; then
     dist_dir=$JULIAVM_WORK_DIR'/dists/'$1
     juliavm_echo $dist_dir
   else
@@ -176,8 +190,8 @@ juliavm_help() {
   juliavm_echo "  help              list all commands"
   juliavm_echo " "
   juliavm_echo " ARCHITECTURE options (if you don't pass unix 64 bits will be used):"
-  juliavm_echo "  -x64    unix 64 bits"
   juliavm_echo "  -osx    mac osx bits"
+  juliavm_echo "  -x64    unix 64 bits"
   juliavm_echo "  -x86    unix 32 bits"
 }
 
@@ -195,7 +209,8 @@ juliavm_uninstall(){
   sed -i /'alias juliavm='/d  ~/.bashrc
   command rm -r ~/.juliavm
   command unset JULIAVM_JULIA_REPO
-  command unset JULIAVM_JULIA_AWS
+  command unset JULIAVM_JULIA_AWS_LINUX
+  command unset JULIAVM_JULIA_AWS_OSX
   command unset JULIAVM_WORK_DIR
 }
 
