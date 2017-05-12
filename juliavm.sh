@@ -52,16 +52,14 @@ juliavm_osx_install(){
   file="julia-$1-osx10.7+.dmg"
   url="https://s3.amazonaws.com/julialang/bin/osx/x64/$major/$file"
   dists_dir="$JULIAVM_WORK_DIR/dists/$1"
-  if ! [ -d $dists_dir ]; then
-    mkdir -p "$dists_dir"
-    cd "$dists_dir"
-    command curl -O "$url"
-    hdiutil attach $file
-    cp -r "/Volumes/Julia-$1/Julia-$major.app/Contents/Resources/julia/"* .
-    hdiutil detach "/Volumes/Julia-$1"
-    rm $file
-    echo "Julia $1 installed!"
-  fi
+  command mkdir -p "$dists_dir"
+  command cd "$dists_dir"
+  command curl -O "$url"
+  command hdiutil attach $file
+  command cp -r "/Volumes/Julia-$1/Julia-$major.app/Contents/Resources/julia/"* .
+  command hdiutil detach "/Volumes/Julia-$1"
+  command rm $file
+  juliavm_echo "Julia $1 installed!"
 }
 
 juliavm_use(){
