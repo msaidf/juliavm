@@ -29,7 +29,7 @@
 
   juliavm_copy_files(){
     eval 'cp $CURRENT_DIR/juliavm.sh $INSTALL_DIR/juliavm'
-    echo "alias juliavm='$INSTALL_DIR/juliavm'" >> ~/.bashrc && exec bash
+    eval 'ln -s $INSTALL_DIR/juliavm' $HOME/bin'
     eval 'cp -r $CURRENT_DIR/.git $INSTALL_DIR'
   }
 

@@ -42,6 +42,7 @@ juliavm_install(){
     command tar -xvzf "$dists_dir"/"$file".tar.gz -C "$dists_dir" --strip-components=1
     juliavm_echo 'Cleaning ...'
     command rm "$dists_dir"/"$file".tar.gz
+	command update-alternatives --install $HOME/bin/julia julia $dists_dir/bin/julia "$3"
   fi
   juliavm_echo "Julia "$1" installed!"
   juliavm_use $1
